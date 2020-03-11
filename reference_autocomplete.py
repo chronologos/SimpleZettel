@@ -33,6 +33,8 @@ class ReferenceAutocompleteCommand(sublime_plugin.EventListener):
         cur_word_regex = ".*{}.*".format(prefix)
         # dictionary with filename as key, list of (linenum, line) as value.
         raw_res = ExternalSearch().rg_search_for_text(ZETTEL_DIRS, cur_word_regex)
+        # List of [(filename, linenum, line)]
+        # Duplicated code.
         flattened_res = []
         for k, l in raw_res.items():
             for v in l:

@@ -1,7 +1,11 @@
 [
 {
-    "caption": "SZ: Open wiki page",
+    "caption": "SZ: Jump to page",
     "command": "open_page"
+},
+{
+    "caption": "SZ: Jump to block",
+    "command": "open_block"
 },
 {
     "caption": "SZ: List back links",

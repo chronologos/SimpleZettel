@@ -18,7 +18,7 @@ class WikiPage:
         self.view = view
 
     def identify_page_at_cursor(self):
-        """ Returns (uid, title) if page exists, None if it doesn't. """
+        """ Returns (uid, title) if link is parsable, None if it doesn't. """
         for region in self.view.sel():
             text_on_cursor = None
             pos = region.begin()
