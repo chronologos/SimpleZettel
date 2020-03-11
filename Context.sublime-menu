@@ -1,0 +1,10 @@
+[
+{
+    "caption": "SZ: Open wiki page",
+    "command": "open_page"
+},
+{
+    "caption": "SZ: List back links",
+    "command": "list_back_links"
+}
+]
