@@ -1,8 +1,10 @@
 import sublime, sublime_plugin
 import os, string
 import re
+import fileinput
 
 from SimpleZettel.external_search import *
+from SimpleZettel.uid import *
 
 # group 1 will be reference text.
 reference_regex = re.compile(r".*\[\[(.*)\]\].*")
@@ -62,6 +64,19 @@ class WikiPage:
             results.append([basename, file_path_ext])
         return results
 
+    def find_backlinks(self):
+        self.current_file = self.view.file_name()
+        _, _, _, uid = path_file_suffix(self.current_file)
+        results = []
+        search = ExternalSearch()
+        file_paths = search.rg_search_in(ZETTEL_DIRS, uid)
+        for fp in file_paths:
+            if not fp:
+                continue
+            dirname, basename, extension, uid = path_file_suffix(fp)
+            results.append([basename, fp])
+        return results
+
     def open_selected_file(self, selected_index):
         if selected_index != -1:
             _, file = self.file_list[selected_index]
@@ -87,3 +102,13 @@ class WikiPage:
         #     "prepare_from_template", {"title": pagename, "template": "default_page"}
         # )
         # new_view.set_syntax_file(current_syntax)
+
+
+def append_to_line(file, line_num, text):
+    for num, line in enumerate(fileinput.input(file, inplace=True), start=1):
+        line = line.rstrip("\r\n")
+        if num == line_num:
+            print(line + " " + text)
+        else:
+            print(line)
+    return

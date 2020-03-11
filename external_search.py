@@ -22,7 +22,15 @@ class ExternalSearch:
         Perform an external search for regexp in folder.
         """
         # -l to return only matching filenames.
-        args = [self.search_cmd, "-l", regexp, " ".join(folders)]
+        args = [
+            self.search_cmd,
+            "--iglob",
+            "*.md",
+            "--ignore-case",
+            "-l",
+            regexp,
+            " ".join(folders),
+        ]
         print("rg_search_in args={}".format(args))
         raw_res = self.run(args)
         return [r for r in raw_res.split("\n") if r != ""]
@@ -31,7 +39,13 @@ class ExternalSearch:
         """   
         Perform an external search for file names matching glob in folder.
         """
-        args = [self.search_cmd, "-g", glob, "--files", " ".join(folders)]
+        args = [
+            self.search_cmd,
+            "--files",
+            "--iglob",
+            glob,
+            " ".join(folders),
+        ]
         print("rg_search_for_file args={}".format(args))
         raw_res = self.run(args)
         return [r for r in raw_res.split("\n") if r != ""]
@@ -43,8 +57,10 @@ class ExternalSearch:
         """
         args = [
             self.search_cmd,
+            "--iglob",
+            "*.md",
             "--line-number",
-            "--smart-case",
+            "--ignore-case",
             regexp,
             " ".join(folders),
         ]

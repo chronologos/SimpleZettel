@@ -5,13 +5,19 @@ import re
 
 from SimpleZettel.wiki_page import *
 from SimpleZettel.external_search import *
-
-#                        Y Y Y Y M M D D H H M M S S
-like_uid = re.compile(r"\d\d\d\d\d\d\d\d\d\d\d\d\d\d")
+from SimpleZettel.uid import *
 
 
 class ReferenceAutocompleteCommand(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
+        # don't offer anything for multiple cursors
+        if len(locations) > 1:
+            return ([], 0)
+        # start determines which completion to offer
+        start = locations[0] - len(prefix)
+        # check scope of charactor on `start
+        if not view.match_selector(start, "text.html.markdown"):
+            return None
         verbose = False
         if verbose:
             print("Running ReferenceAutocompleteCommand")
@@ -46,12 +52,3 @@ class ReferenceAutocompleteCommand(sublime_plugin.EventListener):
         cur_word_region = self.view.word(cur_region)
         cur_word = self.view.substr(cur_word_region)
         return cur_word
-
-
-def strip_file_suffix(filename):
-    base = os.path.basename(filename)
-    return os.path.splitext(base)[0]
-
-
-def looks_like_uid(s):
-    return like_uid.search(s)
