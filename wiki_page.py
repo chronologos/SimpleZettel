@@ -5,10 +5,9 @@ import fileinput
 from SimpleZettel.external_search import *
 from SimpleZettel.uid import *
 
-# group 1 will be reference text.
-reference_regex = re.compile(r".*\[\[(.*)\]\].*")
-# group 1 will be uid, group 2 title.
-uid_title_regex = re.compile(r"(\d*)_?([\w ]*)")
+# group 1 and 4 will be brackets.
+# group 2 will be uid, group 3 title.
+uid_title_regex = re.compile(r"(\[\[)(\d*)_?([\w -]*)(\]\])")
 DEFAULT_MARKDOWN_EXTENSION = ".md"
 
 
@@ -21,21 +20,21 @@ class WikiPage:
         for region in self.view.sel():
             text_on_cursor = None
             pos = region.begin()
+            _, col = self.view.rowcol(pos)
             line_region = self.view.line(pos)
             if not line_region.empty():
                 text_on_cursor = self.view.substr(line_region)
-                matches = reference_regex.match(text_on_cursor)
-                if not matches or matches.lastindex < 1:
-                    continue
-                # Match inside [[ ]]
-                link_only = matches.group(1)
-                matches = uid_title_regex.match(link_only)
-                if not matches or matches.lastindex < 2:
-                    print("no matches")
-                    continue
-                uid, title = matches.group(1), matches.group(2)
-                print("identify_page_at_cursor: uid, title = {}, {}".format(uid, title))
-                return uid, title
+                print(text_on_cursor)
+                matches = uid_title_regex.finditer(text_on_cursor)
+                for match in matches:
+                    uid, title = match.group(2), match.group(3)
+                    start_pos, end_pos = match.start(1), match.end(4)
+                    # print("identify_page_at_cursor: uid, title = {}, {}".format(uid, title))
+                    # print("cw {} uid {} title {}".format(cur_word,uid,title))
+                    # print("sp {} ep {} cp {}".format(start_pos,end_pos,col))
+                    if col >= start_pos and col <= end_pos:
+                        return uid, title
+        print("no match")
         return None
 
     def select_page(self, uid, title):

@@ -5,9 +5,8 @@ import fileinput
 
 from SimpleZettel.external_search import *
 from SimpleZettel.uid import *
-from SimpleZettel.wiki_page import uid_title_regex
 
-block_reference_regex = re.compile(r"\(\((.*)\)\)")
+block_reference_regex = re.compile(r"\(\((\d*)_?([\w ]*)\)\)")
 
 
 class WikiBlock:
@@ -23,12 +22,6 @@ class WikiBlock:
             if not line_region.empty():
                 text_on_cursor = self.view.substr(line_region)
                 matches = block_reference_regex.search(text_on_cursor)
-                if not matches or matches.lastindex < 1:
-                    continue
-                # Match inside [[ ]]
-                link_only = matches.group(1)
-                print(link_only)
-                matches = uid_title_regex.match(link_only)
                 if not matches or matches.lastindex < 2:
                     print("no matches")
                     continue
