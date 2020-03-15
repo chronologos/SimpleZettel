@@ -1,4 +1,4 @@
-import os, string
+import os
 import re
 
 #                        Y Y Y Y M M D D H H M M S S

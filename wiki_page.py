@@ -1,5 +1,4 @@
-import sublime, sublime_plugin
-import os, string
+import os
 import re
 import fileinput
 
@@ -49,7 +48,7 @@ class WikiPage:
         elif len(self.file_list) == 1:
             self.open_selected_file(0)
         else:
-            self.open_new_file("{}_{}".format(uid, title))
+            self.open_new_file("{}_{}".format(uid, title), title)
 
     def find_filenames(self, name_ref):
         results = []
@@ -65,6 +64,7 @@ class WikiPage:
         return results
 
     def find_backlinks(self):
+        """ Returns [[basename, path]]. """
         self.current_file = self.view.file_name()
         _, _, _, uid = path_file_suffix(self.current_file)
         results = []
@@ -83,7 +83,7 @@ class WikiPage:
             print("Opening file '%s'" % (file))
             self.view.window().open_file(file)
 
-    def open_new_file(self, pagename):
+    def open_new_file(self, pagename, title):
         current_syntax = self.view.settings().get("syntax")
         current_file = self.view.file_name()
         current_dir = os.path.dirname(current_file)
@@ -97,11 +97,11 @@ class WikiPage:
         new_view = self.view.window().new_file()
         new_view.retarget(filename)
 
-        # TODO(chronologos): Add prepare for template.
-        # new_view.run_command(
-        #     "prepare_from_template", {"title": pagename, "template": "default_page"}
-        # )
-        # new_view.set_syntax_file(current_syntax)
+        new_view.run_command(
+            "prepare_from_template",
+            {"title": title, "template": "20200314163455_Note Template.md"},
+        )
+        new_view.set_syntax_file(current_syntax)
 
 
 def append_to_line(file, line_num, text):

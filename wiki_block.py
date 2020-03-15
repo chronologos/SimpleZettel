@@ -52,7 +52,7 @@ class WikiBlock:
         #     self.open_new_file("{}_{}".format(uid, title))
 
     def find_blocks(self, name_ref):
-        verbose=True
+        verbose = True
         results = []
         search = ExternalSearch()
         raw_res = search.rg_search_for_text(ZETTEL_DIRS, name_ref)
@@ -76,6 +76,11 @@ class WikiBlock:
 
     def open_block(self, selected_index):
         if selected_index != -1:
-            file, linenum, = self.block_list[selected_index][0], self.block_list[selected_index][1]
+            file, linenum, = (
+                self.block_list[selected_index][0],
+                self.block_list[selected_index][1],
+            )
             print("Opening file '%s'" % (file))
-            self.view.window().open_file("{}:{}".format(file,linenum), sublime.ENCODED_POSITION)
+            self.view.window().open_file(
+                "{}:{}".format(file, linenum), sublime.ENCODED_POSITION
+            )

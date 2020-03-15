@@ -10,5 +10,9 @@
 {
     "caption": "SZ: List back links",
     "command": "list_back_links"
-}
+},
+{
+    "caption": "SZ: Append Backlinks",
+    "command": "append_backlinks"
+},
 ]
